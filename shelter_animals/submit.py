@@ -29,6 +29,10 @@ def enum_outcome(outcome):
     raise Exception
 
 
+def reorder_result(x):
+    return [str(x[i]) for i in [3,0,1,4,2]]
+
+
 def convert_age_to_days(age_string):
     if type(age_string) != type(''):
         return age_string
@@ -114,8 +118,9 @@ if __name__ == '__main__':
     test_numeric_data = select_columns(test_data)
     test_features = pd.DataFrame(test_numeric_data).fillna(0).values
 
-    predictions = rf_classifier.predict(train_features)
+    predictions = rf_classifier.predict_proba(train_features)
     output_lines = [OUTPUT_HEADER]
+
     for i in zip(test_data['ID'], predictions):
-        output_lines.append(str(i[0]) + OUTPUT_ROW[i[1]])
+        output_lines.append(str(i[0]) + ',' + ','.join(reorder_result(list(i[1]))))
     print('\n'.join(output_lines))
